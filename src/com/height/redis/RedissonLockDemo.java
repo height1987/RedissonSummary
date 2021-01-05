@@ -11,20 +11,13 @@ import org.redisson.api.RedissonClient;
  * 3.不会发生死锁
  * 4.redis异常时能释放锁
  */
-public class DistributLock {
+public class RedissonLockDemo {
     public static void main(String args[]){
         RedissonClient redissonClient = Redisson.create();
         RLock lock = redissonClient.getLock("12");
         lock.lock();
         doOneThing();
-        lock.lock();
-        doTwoThing();
         lock.unlock();
-        lock.unlock();
-
-
-
-
     }
 
     private static void doTwoThing() {

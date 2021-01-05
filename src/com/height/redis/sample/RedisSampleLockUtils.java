@@ -1,22 +1,32 @@
 package com.height.redis.sample;
 
-import org.springframework.data.redis.core.RedisCallback;
-import org.springframework.data.redis.core.RedisTemplate;
-import redis.clients.jedis.JedisCommands;
 import redis.clients.jedis.ShardedJedis;
 
-import javax.annotation.Resource;
-import java.util.logging.Logger;
 
 public class RedisSampleLockUtils {
 
-    public static Long setnx(String key, String value,int exTime) {
+    public static Long SUCCESS_CODE = 1L;
+    public static Long ERROR_CODE = 0L;
+    private static String KEY_PLACEHOLDER = "KEY_HOLDER";
+
+    public static boolean lock(String key, int exTime) {
+        Long setnx = setnx(key, KEY_PLACEHOLDER, exTime);
+        return SUCCESS_CODE.equals(setnx);
+    }
+
+    public static boolean unlock(String key) {
+        Long del = del(key);
+        return SUCCESS_CODE.equals(del);
+    }
+
+
+    private static Long setnx(String key, String value, int exTime) {
         ShardedJedis jedis = null;
         Long result = null;
         try {
             jedis = RedisShardedPool.getJedis();
             result = jedis.setnx(key, value);
-            jedis.expire(key,exTime);
+            jedis.expire(key, exTime);
         } catch (Exception e) {
             RedisShardedPool.close(jedis);
             return result;
@@ -25,7 +35,7 @@ public class RedisSampleLockUtils {
         return result;
     }
 
-    public static Long del(String key){
+    private static Long del(String key) {
         ShardedJedis jedis = null;
         Long result = null;
         try {

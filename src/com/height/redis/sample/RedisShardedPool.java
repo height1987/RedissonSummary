@@ -7,6 +7,8 @@ import redis.clients.jedis.ShardedJedisPool;
 import redis.clients.util.Hashing;
 import redis.clients.util.Sharded;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +21,8 @@ public class RedisShardedPool {
     private static Boolean testOnBorrow = true;//在borrow一个jedis实例的时候，是否要进行验证操作，如果赋值true。则得到的jedis实例肯定是可以用的。
     private static Boolean testOnReturn = true;//在return一个jedis实例的时候，是否要进行验证操作，如果赋值true。则放回jedispool的jedis实例肯定是可以用的。
 
-    private static String redis1Ip = "";
-    private static Integer redis1Port = 1;
+    private static String redis1Ip = "139.224.33.69";
+    private static Integer redis1Port = 6641;
 
 
 
@@ -37,7 +39,12 @@ public class RedisShardedPool {
 
         config.setBlockWhenExhausted(true);//连接耗尽的时候，是否阻塞，false会抛出异常，true阻塞直到超时。默认为true。
 
-        JedisShardInfo info1 = new JedisShardInfo(redis1Ip,redis1Port,1000*2);
+        JedisShardInfo info1 = null;
+        try {
+            info1 = new JedisShardInfo(new URI("redis://holder:Toodc600@139.224.33.69:6641?max.idle=2000&max.total=5000&max.wait=15000"));
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
 
 
         List<JedisShardInfo> jedisShardInfoList = new ArrayList<JedisShardInfo>(2);
@@ -68,16 +75,16 @@ public class RedisShardedPool {
 
 
     public static void main(String[] args) {
-        /*ShardedJedis jedis = pool.getResource();
+        ShardedJedis jedis = pool.getResource();
         System.out.println(jedis.get("key1"));
-        for(int i =0;i<10;i++){
-            jedis.set("key"+i,"value"+i);
-        }
-        close(jedis);
-
-        pool.destroy();//临时调用，销毁连接池中的所有连接
-        System.out.println("program is end");*/
-        pool.destroy();//临时调用，销毁连接池中的所有连接
+//        for(int i =0;i<10;i++){
+//            jedis.set("key"+i,"value"+i);
+//        }
+//        close(jedis);
+//
+//        pool.destroy();//临时调用，销毁连接池中的所有连接
+//        System.out.println("program is end");
+//        pool.destroy();//临时调用，销毁连接池中的所有连接
 
     }
 }
