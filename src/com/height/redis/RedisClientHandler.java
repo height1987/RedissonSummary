@@ -1,4 +1,4 @@
-package com.height.redisDemo;
+package com.height.redis;
 
 public class RedisClientHandler {
 }

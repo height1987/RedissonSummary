@@ -1,4 +1,4 @@
-package com.height.redisDemo;
+package com.height.redis;
 
 import org.redisson.Redisson;
 import org.redisson.api.RLock;
