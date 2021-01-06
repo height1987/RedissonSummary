@@ -26,7 +26,9 @@ public class RedisSampleLockUtils {
         try {
             jedis = RedisShardedPool.getJedis();
             result = jedis.setnx(key, value);
-            jedis.expire(key, exTime);
+            if(SUCCESS_CODE.equals(result)){
+                jedis.expire(key, exTime);
+            }
         } catch (Exception e) {
             RedisShardedPool.close(jedis);
             return result;
