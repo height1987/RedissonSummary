@@ -7,7 +7,21 @@
   - 集群容错：当Redis主节点获取到锁信息时，可能未完成锁信息的从节点同步就崩溃了，可能会导致锁信息丢失。
 
 ### 2.常见分布式锁的问题
+  不能满足：
+  - 解锁控制
+  - 集群容错
+同时，在高并发情况下，如果很多线程不断频繁重试获取锁，对资源的浪费比较严重。
     
 ### 3.Redisson实现
-
-### 4.Redisson源码解读
+- 加锁流程 
+  - 执行脚本：  
+    ![img.png](https://outter.oss-cn-shanghai.aliyuncs.com/redisson-lock-lua.jpeg)
+  - 执行流程：    
+    ![img.png](https://outter.oss-cn-shanghai.aliyuncs.com/redisson-lock.jpg)
+  
+- 解锁流程
+  - 执行脚本
+    ![img.png](https://outter.oss-cn-shanghai.aliyuncs.com/redisson-unlock-lua.jpeg)    
+  - 执行流程：    
+    ![img.png](https://outter.oss-cn-shanghai.aliyuncs.com/redisson-unlock.jpg)
+  
